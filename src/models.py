@@ -8,28 +8,56 @@ from eralchemy import render_er
 
 Base = declarative_base()
 
-class Person(Base):
-    __tablename__ = 'person'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
+class Media(Base):
+    __tablename__ = 'media'
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    user_name = Column(String(250), nullable=False)
+    user_password = Column(String(250), nullable=False)
+    user = Column(ForeignKey('user.id'))
 
-class Address(Base):
-    __tablename__ = 'address'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
+class User(Base):
+    __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
-    street_name = Column(String(250))
-    street_number = Column(String(250))
-    post_code = Column(String(250), nullable=False)
-    person_id = Column(Integer, ForeignKey('person.id'))
-    person = relationship(Person)
+    username = Column(String(250), nullable=False)
+    firstname = Column(String(250), nullable=False)
+    lastname = Column(String(250), nullable=False)
+    email = Column(String(250), nullable=False)
+    DOB = Column(Integer, nullable=True)
+    phone_number = Column(Integer, nullable=True)
+    gender = Column(String(250), nullable=False)
+    follower = Column(ForeignKey('Follower.id'))
+    post = Column(ForeignKey('Post.id'))
+
+class Follower(Base):
+    __tablename__ = 'Follower'
+    id = Column(Integer, primary_key=True)
+    username = Column(String(250), nullable=False)
+    firstname = Column(String(250), nullable=False)
+    lastname = Column(String(250), nullable=False)
+    email = Column(String(250), nullable=False)
+    DOB = Column(Integer, nullable=True)
+    phone_number = Column(Integer, nullable=True)
+    gender = Column(String(250), nullable=False) 
+
+
+class Post(Base):
+    __tablename__ = 'Post'
+    id = Column(Integer, primary_key=True) ## ID of the user who owns this post
+    caption = Column(String(250), nullable=True) ## Photo caption
+    user_id = Column(Integer, nullable=True) ##ID of the user who owns this photo
+    like_numbers = Column(Integer, nullable=True) ## how many likes the photo has
+    comment = Column(ForeignKey('Comment.id'))
+
+
+class Comment(Base):
+    __tablename__ = 'Comment'
+    id = Column(Integer, primary_key=True)
+    comment = Column(String(500), nullable=True)
 
     def to_dict(self):
         return {}
 
-## Draw from SQLAlchemy base
+
 try:
     result = render_er(Base, 'diagram.png')
     print("Success! Check the diagram.png file")
